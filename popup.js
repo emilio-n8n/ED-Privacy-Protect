@@ -1,5 +1,3 @@
-
-
 // ── LOG ──────────────────────────────────────────────────────────────────────
 let logEntries = [];
 
@@ -15,15 +13,16 @@ async function refreshLog() {
 
 function renderLog(logs) {
     content.innerHTML = "";
-    content = document.getElementById('content')
+    content = document.getElementById('panel-log')
     counter = document.getElementById('counter')
     getTabsRequests(logs).then((tabLogs) => {
         counter.innerText = tabLogs.length
         tabLogs.forEach(request => {
             content.innerHTML += genReqElement(request) + "<hr>"
         });
+        console.log(tabLogs.length)
+        genShield(tabLogs.length)
     })
-
 }
 
 document.getElementById("clear").addEventListener("click", async () => {
@@ -146,13 +145,17 @@ function genReqElement(req) {
 }
 
 function genDetailsList(req) {
-    html = "<ul>";
+    let html = "<ul>";
     Object.keys(req).forEach(key => {
         html += `<li>${key}: ${req[key]}</li>`
     });
     return html + "</ul>";
-
 }
 
-// ── INIT ─────────────────────────────────────────────────────────────────────
+function genShield(n) {
+    let shield = document.getElementsByTagName('svg')[0];
+    let text = document.getElementById('tspan-nb');
+    text.innerHTML = n
+}
+
 refreshLog();

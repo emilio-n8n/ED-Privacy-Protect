@@ -1,0 +1,27 @@
+body {
+    width: 500px;
+    height: 600px;
+    padding: 0px;
+    margin: 0px;
+}
+
+header {
+    background-color: #88c4ec;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    #icon {
+        height: 50%;
+        width: 50%;
+    }
+}
+
+#panel-log {
+    padding: .5rem;
+    .request {
+        padding: .5rem;
+    }
+}
