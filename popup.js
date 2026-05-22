@@ -52,10 +52,19 @@ function shortHost(url) {
 }
 
 async function getCurrentTab() {
-  const [tab] = await browser.tabs.query({
-    active: true,
-    currentWindow: true
-  });
+  let tab;
+  if (this.hasOwnProperty('browser')) {
+    [tab] = await browser.tabs.query({
+      active: true,
+      currentWindow: true
+    });
+  } else {
+    [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true
+    });
+  }
+
   return tab;
 }
 

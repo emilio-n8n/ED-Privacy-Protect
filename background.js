@@ -106,13 +106,15 @@ async function logAndNotify(details, type) {
   let data = {};
   if (type == "headers") {
     data = details.requestHeaders.find((header) => header.name === "Cookie").value;
-  } else if (type == "body") {
+  } else if (type == "body" && !details.requestBody.hasOwnProperty('error')) {
     if (details.requestBody.hasOwnProperty('raw') && details.requestBody.raw.length > 0) {
       console.log(details.requestBody)
       data = TextDec.decode(details.requestBody.raw[0].bytes);
     } else {
       data = details.requestBody.formData.data
     }
+  } else {
+    console.log('error reading ', details)
   }
   const entry = {
     id:        `${Date.now()}-${Math.random().toString(36).slice(2)}`,
