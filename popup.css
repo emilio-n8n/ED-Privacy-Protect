@@ -23,5 +23,9 @@ header {
     padding: .5rem;
     .request {
         padding: .5rem;
+
+        ::details-content{
+            overflow-x: scroll;
+        }
     }
 }
