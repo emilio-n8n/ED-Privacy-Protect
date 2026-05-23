@@ -1,5 +1,11 @@
 {
   "dependencies": {
     "web-ext": "^10.2.0"
+  },
+  "scripts": {
+    "dev": "web-ext run",
+    "dev-c": "web-ext run -t chromium",
+    "build": "web-ext build",
+    "http": "npx http-server"
   }
 }

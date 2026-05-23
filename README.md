@@ -1,8 +1,10 @@
 To dev:
-`web-ext run` for firefox
+`npm run dev` for firefox
 
-`web-ext run -t chromium` for chrome (not compatible yet)
+`npm run dev-c` for chrome (not compatible yet)
+
+`npm run http` to work on the popup html directly
 
 
 To build:
-`web-ext build`
+`npm run build`
