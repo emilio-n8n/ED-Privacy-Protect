@@ -12,8 +12,8 @@ async function refreshLog() {
 }
 
 function renderLog(logs) {
+    content = document.getElementById('req-list')
     content.innerHTML = "";
-    content = document.getElementById('panel-log')
     counter = document.getElementById('counter')
     getTabsRequests(logs).then((tabLogs) => {
         counter.innerText = tabLogs.length
@@ -137,7 +137,7 @@ function genReqElement(req) {
                 <p>Depuis la page <b>${data.fullURL}</b>, ${data["Elapsed_Time"]/1000}s après le chargement de la page</b>.</p>
                 <details>
                     <summary>Détails de la requête (infos sensibles)</summary>
-                    ${genDetailsList(data)}
+                    ${genDetailsCode(data)}
                 </details>
             </div>`
     }
@@ -150,6 +150,14 @@ function genDetailsList(req) {
         html += `<li>${key}: ${req[key]}</li>`
     });
     return html + "</ul>";
+}
+
+function genDetailsCode(req) {
+    let html = "<code>";
+    Object.keys(req).forEach(key => {
+        html += `${key}: ${req[key]}<br>`
+    });
+    return html + "</code>";
 }
 
 function genShield(n) {
