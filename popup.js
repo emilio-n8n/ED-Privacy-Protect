@@ -174,7 +174,7 @@ function genDetailsCode(req) {
 
     let html = "";
     Object.keys(req).forEach(key => {
-        html += `${escHtml(key)}: ${escHtml(req[key])}\n`
+        html += `${escHtml(key)}: ${escHtml(req[key])}<br>`
     });
 
     copyBtns.appendChild(copyJSON)
