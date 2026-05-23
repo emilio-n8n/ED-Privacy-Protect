@@ -53,7 +53,7 @@ header {
         padding: .5rem;
 
         details {
-            margin-top: 0.5rem;
+            margin-top: .5rem;
         }
 
         summary {
@@ -62,17 +62,32 @@ header {
             font-weight: bold;
         }
 
-        pre {
-            background: #f4f4f4;
-            padding: 0.5rem;
-            border-radius: 4px;
-            overflow-x: auto;
-            font-size: 0.85rem;
+        code {
+            background-color: #eee;
+            padding: .5rem .7rem;
+            border-radius: .5rem;
+            display: block;
+            overflow-x: scroll;
         }
 
-        ul {
-            padding-left: 1.2rem;
-            font-size: 0.9rem;
+        #buttonBar {
+            position: absolute;
+            right: 1rem;
+            padding-right: .5rem;
+
+            button {
+                float: right;
+                border: none;
+                background-color: #ccc;
+                margin: .2rem;
+                padding: .1rem .2rem;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background-color: #bbb;
+            }
         }
     }
 }
