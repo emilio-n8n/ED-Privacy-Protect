@@ -52,9 +52,27 @@ header {
     .request {
         padding: .5rem;
 
-        ::details-content {
-            overflow-x: scroll;
+        details {
+            margin-top: 0.5rem;
         }
 
+        summary {
+            cursor: pointer;
+            color: #0e8ac9;
+            font-weight: bold;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 0.5rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+        }
+
+        ul {
+            padding-left: 1.2rem;
+            font-size: 0.9rem;
+        }
     }
 }
