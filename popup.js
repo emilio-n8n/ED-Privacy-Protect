@@ -18,7 +18,8 @@ function renderLog(logs) {
     getTabsRequests(logs).then((tabLogs) => {
         counter.innerText = tabLogs.length
         tabLogs.forEach(request => {
-            content.innerHTML += genReqElement(request) + "<hr>"
+            content.appendChild(genReqElement(request))
+            content.appendChild(document.createElement('hr'))
         });
         console.log(tabLogs.length)
         genShield(tabLogs.length)
@@ -115,18 +116,18 @@ function parseReq(req) {
 function genReqElement(req) {
     const data = parseReq(req)
     let elem = JSON.stringify(data)
+    let reqElem = document.createElement('div')
+    reqElem.className = "request"
     if (data.type === "matomo") {
         elem = `
-            <div class="request">
                 <h2>Traqueur de visite</h2>
                 <p>Nature: visite de la page ${data["action_name"]}</p>
                 <p>Capturée par ED à <b>${data["h"]+":"+data["m"]+" et "+data["s"]}s</b>.</p>
                 <p>Depuis la page <b>${data["url"]}</b> de résolution <b>${data["res"]}px</b>.</p>
                 <details>
                     <summary>Détails de la requête (infos sensibles)</summary>
-                    ${genDetailsList(data)}
+                    ${genDetailsCode(data)}
                 </details>
-            </div>
         `
     } else if (data.type === "bm") {
         elem = `
@@ -141,7 +142,18 @@ function genReqElement(req) {
                 </details>
             </div>`
     }
-    return elem
+    reqElem.innerHTML = elem;
+
+    reqElem.querySelector('.copy-json').onclick = function() {
+        navigator.clipboard.writeText(JSON.stringify(req));
+        console.log('click')
+    }
+    reqElem.querySelector('.copy').onclick = function() {
+        navigator.clipboard.writeText(reqElem.querySelector('code').innerText);
+        console.log('click')
+    }
+
+    return reqElem
 }
 
 function genDetailsList(req) {
@@ -153,11 +165,32 @@ function genDetailsList(req) {
 }
 
 function genDetailsCode(req) {
-    let html = "<code>";
+    let copyBtns = document.createElement('div')
+    copyBtns.id = "buttonBar";
+
+    let copyJSON = document.createElement('button');
+    let copyText = document.createElement('button');
+    copyJSON.innerText = "copy json";
+    copyText.innerText = "copy";
+    copyJSON.className = "copy-json";
+    copyText.className = "copy";
+
+    let html = "";
     Object.keys(req).forEach(key => {
         html += `${key}: ${req[key]}<br>`
     });
-    return html + "</code>";
+
+    copyBtns.appendChild(copyJSON)
+    copyBtns.appendChild(copyText)
+
+    code = document.createElement('code')
+    code.innerHTML = html
+
+    completHTML = document.createElement('div')
+    completHTML.appendChild(copyBtns)
+    completHTML.appendChild(code)
+
+    return completHTML.outerHTML.toString();
 }
 
 function genShield(n) {

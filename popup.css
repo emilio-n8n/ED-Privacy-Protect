@@ -53,8 +53,35 @@ header {
         padding: .5rem;
 
         ::details-content {
+            margin-top: .5rem;
+        }
+
+        code {
+            background-color: #eee;
+            padding: .5rem .7rem;
+            border-radius: .5rem;
+            display: block;
             overflow-x: scroll;
         }
 
+        #buttonBar {
+            position: absolute;
+            right: 1rem;
+            padding-right: .5rem;
+
+            button {
+                float: right;
+                border: none;
+                background-color: #ccc;
+                margin: .2rem;
+                padding: .1rem .2rem;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background-color: #bbb;
+            }
+        }
     }
 }
