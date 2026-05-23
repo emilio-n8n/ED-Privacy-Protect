@@ -2,7 +2,7 @@
 let logEntries = [];
 
 function send(msg) {
-  return new Promise(res => chrome.runtime.sendMessage(msg, res));
+  return api.runtime.sendMessage(msg);
 }
 
 
@@ -11,18 +11,17 @@ async function refreshLog() {
   renderLog(logEntries);
 }
 
-function renderLog(logs) {
-    content = document.getElementById('req-list')
-    content.innerHTML = "";
-    counter = document.getElementById('counter')
-    getTabsRequests(logs).then((tabLogs) => {
-        counter.innerText = tabLogs.length
-        tabLogs.forEach(request => {
-            content.innerHTML += genReqElement(request) + "<hr>"
-        });
-        console.log(tabLogs.length)
-        genShield(tabLogs.length)
-    })
+async function renderLog(logs) {
+    const content = document.getElementById('req-list');
+    const counter = document.getElementById('counter');
+
+    const tabLogs = await getTabsRequests(logs);
+
+    counter.innerText = tabLogs.length;
+    genShield(tabLogs.length);
+
+    const html = tabLogs.map(request => genReqElement(request)).join("<hr>");
+    content.innerHTML = html;
 }
 
 document.getElementById("clear").addEventListener("click", async () => {
@@ -32,7 +31,7 @@ document.getElementById("clear").addEventListener("click", async () => {
 });
 
 // ── LIVE UPDATE when popup is open ───────────────────────────────────────────
-chrome.runtime.onMessage.addListener((msg) => {
+api.runtime.onMessage.addListener((msg) => {
   if (msg.type === "REQUEST_BLOCKED") {
     logEntries.unshift(msg.entry);
     renderLog(logEntries);
@@ -51,19 +50,10 @@ function shortHost(url) {
 }
 
 async function getCurrentTab() {
-  let tab;
-  if (this.hasOwnProperty('browser')) {
-    [tab] = await browser.tabs.query({
-      active: true,
-      currentWindow: true
-    });
-  } else {
-    [tab] = await chrome.tabs.query({
-      active: true,
-      currentWindow: true
-    });
-  }
-
+  const [tab] = await api.tabs.query({
+    active: true,
+    currentWindow: true
+  });
   return tab;
 }
 
@@ -79,7 +69,7 @@ function parseMatomo(req) {
     const data = {
         type: "matomo",
         fullURL: req.url,
-        req_cookie: req.cookie
+        req_data: req.data
     }
     const url = new URL(req.url);
     const params = new URLSearchParams(url.search);
@@ -96,9 +86,15 @@ function parseBM(req) {
         fullURL: req.url,
         date: date
     }
-    const cookies = JSON.parse(req.cookie).browser_info;
-    for (const key of Object.keys(cookies)) {
-        data[key] = typeof cookies[key] === "object"? JSON.stringify(cookies[key]): cookies[key];
+    try {
+        const payload = JSON.parse(req.data).browser_info;
+        for (const key of Object.keys(payload)) {
+            data[key] = typeof payload[key] === "object" ? JSON.stringify(payload[key]) : payload[key];
+        }
+    } catch (e) {
+        console.error("Error parsing BM data:", e);
+        data.error = "Erreur de parsing des données";
+        data.raw = req.data;
     }
     return data;
 }
@@ -147,17 +143,17 @@ function genReqElement(req) {
 function genDetailsList(req) {
     let html = "<ul>";
     Object.keys(req).forEach(key => {
-        html += `<li>${key}: ${req[key]}</li>`
+        html += `<li><strong>${escHtml(key)}:</strong> ${escHtml(req[key])}</li>`
     });
     return html + "</ul>";
 }
 
 function genDetailsCode(req) {
-    let html = "<code>";
+    let html = "<pre><code>";
     Object.keys(req).forEach(key => {
-        html += `${key}: ${req[key]}<br>`
+        html += `${escHtml(key)}: ${escHtml(req[key])}\n`
     });
-    return html + "</code>";
+    return html + "</code></pre>";
 }
 
 function genShield(n) {
